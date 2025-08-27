@@ -1,0 +1,217 @@
+# Modèles de données de l'API SimplonGN
+
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - nom
+        - email
+        - role
+        - statut
+      properties:
+        _id:
+          type: string
+          description: Identifiant unique de l'utilisateur
+          example: 5f8d0f3d5d7a6f3d5c7b9a1d
+        nom:
+          type: string
+          description: Nom complet de l'utilisateur
+          example: 'Jean Dupont'
+        email:
+          type: string
+          format: email
+          description: Adresse email de l'utilisateur
+          example: 'jean.dupont@example.com'
+        role:
+          type: string
+          enum: [user, admin, formateur]
+          description: Rôle de l'utilisateur dans l'application
+          example: 'user'
+        statut:
+          type: string
+          enum: [actif, inactif, en_attente]
+          description: Statut du compte utilisateur
+          example: 'actif'
+        telephone:
+          type: string
+          description: Numéro de téléphone de l'utilisateur
+          example: '+33123456789'
+        adresse:
+          type: string
+          description: Adresse postale de l'utilisateur
+          example: '123 Rue de Paris, 75001 Paris'
+        dateNaissance:
+          type: string
+          format: date
+          description: Date de naissance de l'utilisateur
+          example: '1990-01-01'
+        bio:
+          type: string
+          description: Biographie de l'utilisateur
+          example: 'Développeur web passionné par les nouvelles technologies.'
+        competences:
+          type: array
+          items:
+            type: string
+          description: Liste des compétences de l'utilisateur
+          example: ['JavaScript', 'Node.js', 'React']
+        createdAt:
+          type: string
+          format: date-time
+          description: Date de création du compte
+          example: '2023-01-01T12:00:00.000Z'
+        updatedAt:
+          type: string
+          format: date-time
+          description: Date de dernière mise à jour du compte
+          example: '2023-01-01T12:00:00.000Z'
+
+    Contact:
+      type: object
+      required:
+        - nom
+        - email
+        - message
+      properties:
+        _id:
+          type: string
+          description: Identifiant unique du message
+          example: 5f8d0f3d5d7a6f3d5c7b9a1e
+        nom:
+          type: string
+          description: Nom de l'expéditeur
+          example: 'Marie Martin'
+        email:
+          type: string
+          format: email
+          description: Email de l'expéditeur
+          example: 'marie.martin@example.com'
+        sujet:
+          type: string
+          description: Sujet du message
+          example: 'Demande d\'information'
+        message:
+          type: string
+          description: Contenu du message
+          example: 'Bonjour, je souhaiterais obtenir des informations sur vos formations.'
+        categorie:
+          type: string
+          enum: [question, suggestion, probleme, autre]
+          description: Catégorie du message
+          example: 'question'
+        statut:
+          type: string
+          enum: [nouveau, en_cours, traité, fermé]
+          description: État de traitement du message
+          example: 'nouveau'
+        reponses:
+          type: array
+          items:
+            type: object
+            properties:
+              contenu:
+                type: string
+                description: Contenu de la réponse
+              auteur:
+                type: string
+                description: Auteur de la réponse
+              estInterne:
+                type: boolean
+                description: Si la réponse est interne uniquement
+              date:
+                type: string
+                format: date-time
+          description: Réponses au message
+        createdAt:
+          type: string
+          format: date-time
+          description: Date d'envoi du message
+          example: '2023-01-01T12:00:00.000Z'
+        updatedAt:
+          type: string
+          format: date-time
+          description: Date de dernière mise à jour du message
+          example: '2023-01-01T12:00:00.000Z'
+
+    Formation:
+      type: object
+      required:
+        - titre
+        - description
+        - duree
+        - dateDebut
+        - dateFin
+        - placesDisponibles
+      properties:
+        _id:
+          type: string
+          description: Identifiant unique de la formation
+          example: 5f8d0f3d5d7a6f3d5c7b9a1f
+        titre:
+          type: string
+          description: Titre de la formation
+          example: 'Développement Web Full Stack'
+        description:
+          type: string
+          description: Description détaillée de la formation
+          example: 'Formation complète pour devenir développeur web full stack.'
+        duree:
+          type: integer
+          description: Durée de la formation en heures
+          example: 400
+        dateDebut:
+          type: string
+          format: date
+          description: Date de début de la formation
+          example: '2023-09-01'
+        dateFin:
+          type: string
+          format: date
+          description: Date de fin de la formation
+          example: '2024-02-28'
+        placesDisponibles:
+          type: integer
+          description: Nombre de places disponibles
+          example: 15
+        statut:
+          type: string
+          enum: [brouillon, publié, annulé, terminé]
+          description: Statut de la formation
+          example: 'publié'
+        prerequis:
+          type: array
+          items:
+            type: string
+          description: Liste des prérequis pour la formation
+          example: ['Bases en programmation', 'Connaissances en HTML/CSS']
+        programme:
+          type: array
+          items:
+            type: object
+            properties:
+              titre:
+                type: string
+                description: Titre du module
+              description:
+                type: string
+                description: Description du module
+              duree:
+                type: number
+                description: Durée du module en heures
+          description: Programme détaillé de la formation
+        formateurs:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+          description: Liste des formateurs de la formation
+        createdAt:
+          type: string
+          format: date-time
+          description: Date de création de la formation
+          example: '2023-01-01T12:00:00.000Z'
+        updatedAt:
+          type: string
+          format: date-time
+          description: Date de dernière mise à jour de la formation
+          example: '2023-01-01T12:00:00.000Z'

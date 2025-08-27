@@ -1,13 +1,48 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Montserrat', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
+    @apply bg-gray-50 text-gray-900 antialiased;
+  }
+
+  h1, h2, h3, h4 { @apply tracking-tight; }
+  a { @apply transition-colors; }
+
+  ::selection { @apply bg-red-600 text-white; }
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+@layer components {
+  /* Containers and sections */
+  .container { @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8; }
+  .section { @apply py-20; }
+
+  /* Cards */
+  .card { @apply bg-white rounded-2xl shadow-lg border border-gray-100; }
+  .card-hover { @apply hover:shadow-xl transition-all duration-300; }
+
+  /* Buttons */
+  .btn { @apply inline-flex items-center justify-center rounded-lg font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2; }
+  .btn-primary { @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-500; }
+  .btn-secondary { @apply bg-gray-900 text-white hover:bg-gray-800 focus:ring-gray-700; }
+  .btn-outline { @apply border border-red-600 text-red-600 hover:bg-red-50 focus:ring-red-500; }
+  .btn-light { @apply bg-white text-gray-900 hover:bg-gray-100; }
+
+  /* Badges */
+  .badge { @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold; }
+  .badge-red { @apply bg-red-600/10 text-red-700; }
+  .badge-amber { @apply bg-amber-500/10 text-amber-700; }
+  .badge-green { @apply bg-green-600/10 text-green-700; }
+
+  /* Section headers */
+  .section-title { @apply text-4xl font-extrabold text-gray-900; }
+  .section-subtitle { @apply text-xl text-gray-600; }
+
+  /* Utility */
+  .divider { @apply w-full border-t border-gray-200; }
 }

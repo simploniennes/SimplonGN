@@ -1,62 +1,105 @@
-// server.js
-import express from "express";
-import dotenv from "dotenv";
-import helmet from "helmet";
-import cors from "cors";
-import morgan from "morgan";
-import rateLimit from "express-rate-limit";
-import connectDB from "./src/config/db.js";
+import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import mongoose from 'mongoose';
+import connectDB from './config/db.js';
+import userRoutes from './routes/user.routes.js';
+import cors from 'cors';
+import config from './config/config.js';
+import { httpLogger } from './utils/logger.js';
+import errorHandler from './middleware/errorHandler.js';
 
-// Import routes
-import authRoutes from "./src/routes/authRoutes.js";
-import userRoutes from "./src/routes/userRoutes.js";
-import formationRoutes from "./src/routes/formationRoutes.js";
-import teamRoutes from "./src/routes/teamRoutes.js";
-import testimonialRoutes from "./src/routes/testimonialRoutes.js";
-import newsRoutes from "./src/routes/newsRoutes.js";
-import faqRoutes from "./src/routes/faqRoutes.js";
+// Configuration de base
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-dotenv.config();
+// Initialisation d'Express
 const app = express();
 
-// ✅ Middlewares globaux (sécurité + parsing JSON)
+// Middlewares de base
 app.use(express.json());
-app.use(helmet());
-app.use(cors({ origin: "*" }));
-app.use(morgan("dev"));
+app.use(express.urlencoded({ extended: true }));
+app.use(httpLogger);
 
-// ✅ Limite de requêtes (sécurité)
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // max 100 requêtes par IP
-  message: "Trop de requêtes, réessayez plus tard.",
-});
-app.use(limiter);
+// Configuration CORS: accepte plusieurs origines (front)
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (config.clientUrls.includes(origin)) return callback(null, true);
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+}));
 
-// ✅ Connexion DB
+// Connexion à la base de données
 connectDB();
 
-// ✅ Routes principales
-app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/formations", formationRoutes);
-app.use("/api/team", teamRoutes);
-app.use("/api/testimonials", testimonialRoutes);
-app.use("/api/news", newsRoutes);
-app.use("/api/faq", faqRoutes);
-
-// ✅ Route test
-app.get("/", (req, res) => {
-  res.send("🚀 API Simplon Guinée fonctionne !");
+// Routes de base
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'API SimplonGN - Bienvenue !',
+    status: 'Actif',
+    timestamp: new Date().toISOString(),
+    database: mongoose.connection.readyState === 1 ? 'Connecté' : 'Non connecté'
+  });
 });
 
-// ✅ Gestion erreurs 404
-app.use((req, res) => {
-  res.status(404).json({ message: "Route non trouvée" });
+// Routes API
+app.use('/api/v1/users', userRoutes);
+
+// Route de santé complète
+app.get('/health', async (req, res) => {
+  const status = {
+    status: 'success',
+    timestamp: new Date().toISOString(),
+    services: {
+      database: {
+        status: mongoose.connection.readyState === 1 ? 'ok' : 'error',
+        message: mongoose.connection.readyState === 1 
+          ? 'Base de données connectée' 
+          : 'Erreur de connexion à la base de données'
+      },
+      api: 'ok'
+    }
+  };
+  
+  res.status(200).json(status);
 });
 
-// ✅ Lancement serveur
+// Gestion des routes non trouvées
+app.use((req, res, next) => {
+  const error = new Error(`Ressource non trouvée: ${req.originalUrl}`);
+  error.status = 404;
+  next(error);
+});
+
+// Gestionnaire d'erreurs global
+app.use(errorHandler);
+
+// Configuration du port
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`🔥 Serveur backend lancé sur le port ${PORT}`);
-});
+
+// Démarrage du serveur uniquement si ce fichier est exécuté directement
+if (process.env.NODE_ENV !== 'test') {
+  const server = app.listen(PORT, () => {
+    console.log(`🚀 Serveur démarré sur http://localhost:${PORT}`);
+    console.log(`📊 Base de données: ${mongoose.connection.readyState === 1 ? '✅ Connectée' : '❌ Non connectée'}`);
+  });
+
+  // Gestion des erreurs non capturées
+  process.on('unhandledRejection', (err) => {
+    console.error('ERREUR NON GÉRÉE:', err);
+    server.close(() => process.exit(1));
+  });
+
+  // Gestion de l'arrêt gracieux
+  process.on('SIGTERM', () => {
+    console.log('👋 Arrêt gracieux du serveur...');
+    server.close(() => {
+      console.log('💥 Processus terminé');
+      process.exit(0);
+    });
+  });
+}
+
+export default app;
