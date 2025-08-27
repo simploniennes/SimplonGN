@@ -1,1 +1,0 @@
-C'est ici vous mettez les notes consernant ce que vous faite!

@@ -1,0 +1,246 @@
+{
+  "_type": "workspace",
+  "client": "thunder-client",
+  "collectionName": "SimplonGN API Tests",
+  "dateExported": "2025-08-25T17:10:00.000Z",
+  "version": "1.1",
+  "folders": [
+    {
+      "_id": "auth",
+      "colName": "Authentification",
+      "containerId": "__DEFAULT__",
+      "sortNum": 0
+    },
+    {
+      "_id": "users",
+      "colName": "Utilisateurs",
+      "containerId": "__DEFAULT__",
+      "sortNum": 1
+    },
+    {
+      "_id": "formations",
+      "colName": "Formations",
+      "containerId": "__DEFAULT__",
+      "sortNum": 2
+    },
+    {
+      "_id": "articles",
+      "colName": "Articles",
+      "containerId": "__DEFAULT__",
+      "sortNum": 3
+    },
+    {
+      "_id": "gallery",
+      "colName": "Galerie",
+      "containerId": "__DEFAULT__",
+      "sortNum": 4
+    }
+  ],
+  "requests": [
+    // 1. Authentification
+    {
+      "_id": "login",
+      "colId": "auth",
+      "containerId": "auth",
+      "name": "Connexion utilisateur",
+      "url": "http://localhost:5000/api/v1/auth/login",
+      "method": "POST",
+      "sortNum": 0,
+      "tests": "",
+      "type": "http",
+      "created": "2025-08-25T17:10:00.000Z",
+      "modified": "2025-08-25T17:10:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"motdepasse123\"\n}",
+        "form": []
+      }
+    },
+    // 2. Récupérer le profil utilisateur
+    {
+      "_id": "get-profile",
+      "colId": "users",
+      "containerId": "users",
+      "name": "Récupérer le profil utilisateur",
+      "url": "http://localhost:5000/api/v1/users/me",
+      "method": "GET",
+      "sortNum": 0,
+      "tests": "",
+      "type": "http",
+      "created": "2025-08-25T17:10:00.000Z",
+      "modified": "2025-08-25T17:10:00.000Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ]
+    },
+    // 3. Lister les formations
+    {
+      "_id": "list-formations",
+      "colId": "formations",
+      "containerId": "formations",
+      "name": "Lister toutes les formations",
+      "url": "http://localhost:5000/api/v1/formations",
+      "method": "GET",
+      "sortNum": 0,
+      "tests": "",
+      "type": "http",
+      "created": "2025-08-25T17:10:00.000Z",
+      "modified": "2025-08-25T17:10:00.000Z"
+    },
+    // 4. Créer une formation (admin)
+    {
+      "_id": "create-formation",
+      "colId": "formations",
+      "containerId": "formations",
+      "name": "Créer une formation (admin)",
+      "url": "http://localhost:5000/api/v1/formations",
+      "method": "POST",
+      "sortNum": 1,
+      "tests": "",
+      "type": "http",
+      "created": "2025-08-25T17:10:00.000Z",
+      "modified": "2025-08-25T17:10:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{adminToken}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"titre\": \"Nouvelle Formation\",\n  \"description\": \"Description de la nouvelle formation\",\n  \"duree\": 40,\n  \"niveau\": \"débutant\",\n  \"dateDebut\": \"2025-10-01\",\n  \"placesDisponibles\": 20\n}",
+        "form": []
+      }
+    },
+    // 5. Lister les articles
+    {
+      "_id": "list-articles",
+      "colId": "articles",
+      "containerId": "articles",
+      "name": "Lister les articles",
+      "url": "http://localhost:5000/api/v1/articles",
+      "method": "GET",
+      "sortNum": 0,
+      "tests": "",
+      "type": "http",
+      "created": "2025-08-25T17:10:00.000Z",
+      "modified": "2025-08-25T17:10:00.000Z"
+    },
+    // 6. Ajouter un article
+    {
+      "_id": "create-article",
+      "colId": "articles",
+      "containerId": "articles",
+      "name": "Créer un article (admin)",
+      "url": "http://localhost:5000/api/v1/articles",
+      "method": "POST",
+      "sortNum": 1,
+      "tests": "",
+      "type": "http",
+      "created": "2025-08-25T17:10:00.000Z",
+      "modified": "2025-08-25T17:10:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{adminToken}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"titre\": \"Nouvel Article\",\n  \"contenu\": \"Contenu de l'article avec du texte enrichi...\",\n  \"auteur\": \"{{userId}}\",\n  \"categories\": [\"actualite\", \"formation\"]\n}",
+        "form": []
+      }
+    },
+    // 7. Télécharger une image dans la galerie
+    {
+      "_id": "upload-image",
+      "colId": "gallery",
+      "containerId": "gallery",
+      "name": "Télécharger une image",
+      "url": "http://localhost:5000/api/v1/gallery/upload",
+      "method": "POST",
+      "sortNum": 0,
+      "tests": "",
+      "type": "http",
+      "created": "2025-08-25T17:10:00.000Z",
+      "modified": "2025-08-25T17:10:00.000Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{adminToken}}"
+        }
+      ],
+      "body": {
+        "type": "formdata",
+        "form": [
+          {
+            "key": "image",
+            "type": "file",
+            "value": ""
+          },
+          {
+            "key": "titre",
+            "value": "Image de test"
+          },
+          {
+            "key": "description",
+            "value": "Description de l'image de test"
+          }
+        ]
+      }
+    },
+    // 8. Lister les images de la galerie
+    {
+      "_id": "list-gallery",
+      "colId": "gallery",
+      "containerId": "gallery",
+      "name": "Lister les images de la galerie",
+      "url": "http://localhost:5000/api/v1/gallery",
+      "method": "GET",
+      "sortNum": 1,
+      "tests": "",
+      "type": "http",
+      "created": "2025-08-25T17:10:00.000Z",
+      "modified": "2025-08-25T17:10:00.000Z"
+    }
+  ],
+  "env": [
+    {
+      "name": "baseUrl",
+      "value": "http://localhost:5000/api/v1",
+      "enabled": true
+    },
+    {
+      "name": "token",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "name": "adminToken",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "name": "userId",
+      "value": "",
+      "enabled": true
+    }
+  ]
+}
